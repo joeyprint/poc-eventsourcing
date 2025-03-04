@@ -27,15 +27,30 @@ mvn spring-boot:run
 Send a message via REST API
 
 ```shell
-curl --location --request POST 'http://localhost:8080/send?topic=translator&message=translateMessage'
-# or
-curl --location --request POST 'http://localhost:8080/send?topic=kafka&message=HelloWorld'
+curl --location 'http://localhost:8080/send?topic=translator' \
+--header 'Content-Type: application/json' \
+--data '{
+  "key": "Translate-1",
+  "contents": [
+    "item 1",
+    "item 2",
+    "item 3",
+    "item 4",
+    "item 5"
+  ]
+}'
 ```
 
-Expect result
+Expect result in log console after request send message
 
 ```yaml
-Produced message: translateMessage
+Produced message: [item 1, item 2, item 3]
 Consumed topic message: translator
-Consumed value message: translateMessage
+Consumed value message: [item 1, item 2, item 3]
+```
+
+Get a message via REST API
+
+```shell
+curl --location 'localhost:8080/message?key=Translate-1'
 ```
