@@ -1,9 +1,8 @@
 package com.poc.eventsourcing.eventsourcing.helloworld;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class HelloController {
@@ -22,13 +21,17 @@ public class HelloController {
     }
 
     @PostMapping("/send")
-    public String sendMessage(@RequestParam String topic, @RequestParam String message) {
-        helloService.sendMessage(topic, message);
-        return String.format("Message sent to Kafka topic: %s", topic);
+    public String sendMessage(@RequestParam String topic, @RequestBody HelloWorld message) {
+        try {
+            helloService.sendMessage(topic, message);
+            return String.format("Message sent to Kafka topic: %s", topic);
+        } catch (Exception e) {
+            return String.format("Error send message %s", e.getMessage());
+        }
     }
 
     @GetMapping("/message")
-    public String getMessage() {
-        return String.format("Message: %s",  helloConsumer.getMessage());
+    public List<HelloWorld> getMessage(@RequestParam String key) {
+        return helloConsumer.getMessage(key);
     }
 }

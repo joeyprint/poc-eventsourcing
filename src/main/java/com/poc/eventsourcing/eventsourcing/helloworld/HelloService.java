@@ -11,14 +11,14 @@ import java.util.List;
 @Service
 public class HelloService {
     Logger logger = LoggerFactory.getLogger(HelloService.class);
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, HelloWorld> kafkaTemplate;
 
-    public HelloService(KafkaTemplate<String, String> kafkaTemplate) {
+    public HelloService(KafkaTemplate<String, HelloWorld> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(String topic, String message) {
+    public void sendMessage(String topic, HelloWorld message) {
         kafkaTemplate.send(topic, message);
-        logger.info(String.format("Produced message: %s", message));
+        logger.info("Produced message: {}", message.getContents());
     }
 }
