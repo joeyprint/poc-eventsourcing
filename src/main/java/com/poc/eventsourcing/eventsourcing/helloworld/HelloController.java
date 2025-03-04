@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     private final HelloService helloService;
+    private final HelloConsumer helloConsumer;
 
-    public HelloController(HelloService kafkaProducer) {
-        this.helloService = kafkaProducer;
+    public HelloController(HelloService helloService, HelloConsumer helloConsumer) {
+        this.helloService = helloService;
+        this.helloConsumer = helloConsumer;
     }
 
     @GetMapping("/")
@@ -22,6 +24,11 @@ public class HelloController {
     @PostMapping("/send")
     public String sendMessage(@RequestParam String topic, @RequestParam String message) {
         helloService.sendMessage(topic, message);
-        return "Message sent to Kafka topic: " + topic;
+        return String.format("Message sent to Kafka topic: %s", topic);
+    }
+
+    @GetMapping("/message")
+    public String getMessage() {
+        return String.format("Message: %s",  helloConsumer.getMessage());
     }
 }
